@@ -22,6 +22,8 @@ export default async function handler(
       },
     });
 
+    console.log(response.data);
+
     const distance = response.data.rows[0].elements[0].distance.value / 1609.34; // Convert meters to miles
     
     res.status(200).json({ distance });
