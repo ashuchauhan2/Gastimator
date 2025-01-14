@@ -206,7 +206,7 @@ export default function Home() {
                           id="start"
                           ref={startInputRef}
                           type="text"
-                          placeholder="Enter starting address in Canada"
+                          placeholder="Enter starting address"
                           onChange={(e) => setStartAddress(e.target.value)}
                           className="mt-2"
                         />
@@ -217,7 +217,7 @@ export default function Home() {
                           id="end"
                           ref={endInputRef}
                           type="text"
-                          placeholder="Enter destination address in Canada"
+                          placeholder="Enter destination address"
                           onChange={(e) => setEndAddress(e.target.value)}
                           className="mt-2"
                         />
