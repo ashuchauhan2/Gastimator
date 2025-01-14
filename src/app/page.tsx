@@ -61,6 +61,7 @@ export default function Home() {
       throw new Error("Unable to calculate distance");
     } catch (_err) {
       throw new Error("Distance calculation failed");
+      console.error(_err);
     }
   };
 
