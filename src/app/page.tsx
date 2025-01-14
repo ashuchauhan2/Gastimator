@@ -9,6 +9,7 @@ import { MapPin, Gauge, Fuel, ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLoadScript } from "@react-google-maps/api";
+import Footer from "@/components/Footer"
 
 interface CalculationResults {
   distance: number | null;
@@ -177,169 +178,172 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-zinc-800">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
-            Gastimator
-          </h1>
-          <p className="text-xl text-zinc-600 dark:text-zinc-300 max-w-2xl mx-auto">
-            Get accurate gas cost estimates for your trips.
-          </p>
-        </div>
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-zinc-800">
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <h1 className="text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
+              Gastimator
+            </h1>
+            <p className="text-xl text-zinc-600 dark:text-zinc-300 max-w-2xl mx-auto">
+              Get accurate gas cost estimates for your trips.
+            </p>
+          </div>
 
-        <div className="max-w-xl mx-auto">
-          <Card className="p-6 shadow-lg bg-white/50 dark:bg-zinc-900/50 backdrop-blur">
-            <div className="space-y-6">
-              {!showResults ? (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Route Details Section */}
-                  <div>
-                    <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                      <MapPin className="w-5 h-5" />
-                      Route Details
-                    </h2>
-                    <div className="space-y-4">
+          <div className="max-w-xl mx-auto">
+            <Card className="p-6 shadow-lg bg-white/50 dark:bg-zinc-900/50 backdrop-blur">
+              <div className="space-y-6">
+                {!showResults ? (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Route Details Section */}
+                    <div>
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <MapPin className="w-5 h-5" />
+                        Route Details
+                      </h2>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="start">Start Address</Label>
+                          <Input
+                            id="start"
+                            ref={startInputRef}
+                            type="text"
+                            placeholder="Enter starting address"
+                            onChange={(e) => setStartAddress(e.target.value)}
+                            className="mt-2"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="end">End Address</Label>
+                          <Input
+                            id="end"
+                            ref={endInputRef}
+                            type="text"
+                            placeholder="Enter destination address"
+                            onChange={(e) => setEndAddress(e.target.value)}
+                            className="mt-2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* Vehicle Efficiency Section */}
+                    <div>
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Gauge className="w-5 h-5" />
+                        Vehicle Efficiency
+                      </h2>
                       <div>
-                        <Label htmlFor="start">Start Address</Label>
+                        <Label htmlFor="mileage">Vehicle Efficiency (L/100km)</Label>
                         <Input
-                          id="start"
-                          ref={startInputRef}
-                          type="text"
-                          placeholder="Enter starting address"
-                          onChange={(e) => setStartAddress(e.target.value)}
+                          id="mileage"
+                          type="number"
+                          step="0.1"
+                          placeholder="Enter L/100km"
+                          value={mileageValue}
+                          onChange={(e) => setMileageValue(e.target.value)}
                           className="mt-2"
                         />
                       </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* Gas Price Section */}
+                    <div>
+                      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Fuel className="w-5 h-5" />
+                        Fuel Price
+                      </h2>
                       <div>
-                        <Label htmlFor="end">End Address</Label>
+                        <Label htmlFor="gasPrice">Price per Litre (CAD)</Label>
                         <Input
-                          id="end"
-                          ref={endInputRef}
-                          type="text"
-                          placeholder="Enter destination address"
-                          onChange={(e) => setEndAddress(e.target.value)}
+                          id="gasPrice"
+                          type="number"
+                          step="0.001"
+                          placeholder="Enter current gas price per litre"
+                          value={gasPriceValue}
+                          onChange={(e) => setGasPriceValue(e.target.value)}
                           className="mt-2"
                         />
                       </div>
                     </div>
-                  </div>
 
-                  <Separator />
-
-                  {/* Vehicle Efficiency Section */}
-                  <div>
-                    <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                      <Gauge className="w-5 h-5" />
-                      Vehicle Efficiency
-                    </h2>
-                    <div>
-                      <Label htmlFor="mileage">Vehicle Efficiency (L/100km)</Label>
-                      <Input
-                        id="mileage"
-                        type="number"
-                        step="0.1"
-                        placeholder="Enter L/100km"
-                        value={mileageValue}
-                        onChange={(e) => setMileageValue(e.target.value)}
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* Gas Price Section */}
-                  <div>
-                    <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                      <Fuel className="w-5 h-5" />
-                      Fuel Price
-                    </h2>
-                    <div>
-                      <Label htmlFor="gasPrice">Price per Litre (CAD)</Label>
-                      <Input
-                        id="gasPrice"
-                        type="number"
-                        step="0.001"
-                        placeholder="Enter current gas price per litre"
-                        value={gasPriceValue}
-                        onChange={(e) => setGasPriceValue(e.target.value)}
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    disabled={isCalculating || !startAddress || !endAddress || !mileageValue || !gasPriceValue}
-                  >
-                    {isCalculating ? "Calculating..." : "Calculate Route"}
-                  </Button>
-                </form>
-              ) : (
-                <div className="space-y-8">
-                  <div className="space-y-6">
-                    <h2 className="text-2xl font-semibold text-center mb-6">Trip Summary</h2>
-                    
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                          <MapPin className="w-5 h-5" />
-                          Route Details
-                        </h3>
-                        <div className="space-y-2 pl-7">
-                          <p><span className="font-medium">From:</span> {calculationResults?.startAddress}</p>
-                          <p><span className="font-medium">To:</span> {calculationResults?.endAddress}</p>
-                          <p><span className="font-medium">Distance:</span> {calculationResults?.distance?.toFixed(1)} km</p>
+                    <Button 
+                      type="submit" 
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      disabled={isCalculating || !startAddress || !endAddress || !mileageValue || !gasPriceValue}
+                    >
+                      {isCalculating ? "Calculating..." : "Calculate Route"}
+                    </Button>
+                  </form>
+                ) : (
+                  <div className="space-y-8">
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-semibold text-center mb-6">Trip Summary</h2>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                            <MapPin className="w-5 h-5" />
+                            Route Details
+                          </h3>
+                          <div className="space-y-2 pl-7">
+                            <p><span className="font-medium">From:</span> {calculationResults?.startAddress}</p>
+                            <p><span className="font-medium">To:</span> {calculationResults?.endAddress}</p>
+                            <p><span className="font-medium">Distance:</span> {calculationResults?.distance?.toFixed(1)} km</p>
+                          </div>
                         </div>
-                      </div>
 
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                          <Gauge className="w-5 h-5" />
-                          Vehicle Details
-                        </h3>
-                        <div className="space-y-2 pl-7">
-                          <p><span className="font-medium">Efficiency:</span> {calculationResults?.efficiency} L/100km</p>
-                          <p><span className="font-medium">Fuel Required:</span> {calculationResults?.fuelRequired?.toFixed(2)} L</p>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                            <Gauge className="w-5 h-5" />
+                            Vehicle Details
+                          </h3>
+                          <div className="space-y-2 pl-7">
+                            <p><span className="font-medium">Efficiency:</span> {calculationResults?.efficiency} L/100km</p>
+                            <p><span className="font-medium">Fuel Required:</span> {calculationResults?.fuelRequired?.toFixed(2)} L</p>
+                          </div>
                         </div>
-                      </div>
 
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                          <Fuel className="w-5 h-5" />
-                          Cost Breakdown
-                        </h3>
-                        <div className="space-y-2 pl-7">
-                          <p><span className="font-medium">Gas Price:</span> {calculationResults?.gasPrice?.toFixed(3)} CAD/L</p>
-                          <p className="text-xl font-bold mt-4">
-                            Total Cost: {calculationResults?.totalCost?.toFixed(2)} CAD
-                          </p>
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                            <Fuel className="w-5 h-5" />
+                            Cost Breakdown
+                          </h3>
+                          <div className="space-y-2 pl-7">
+                            <p><span className="font-medium">Gas Price:</span> {calculationResults?.gasPrice?.toFixed(3)} CAD/L</p>
+                            <p className="text-xl font-bold mt-4">
+                              Total Cost: {calculationResults?.totalCost?.toFixed(2)} CAD
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    <Button 
+                      onClick={handleNewGastimation}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      New Gastimation
+                    </Button>
                   </div>
+                )}
 
-                  <Button 
-                    onClick={handleNewGastimation}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    New Gastimation
-                  </Button>
-                </div>
-              )}
-
-              {error && (
-                <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-            </div>
-          </Card>
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+              </div>
+            </Card>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <Footer contactUrl="https://ashuchauhan.com/contact" />
+    </div>
   );
 }
